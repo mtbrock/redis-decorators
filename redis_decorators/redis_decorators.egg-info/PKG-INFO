@@ -1,0 +1,27 @@
+Metadata-Version: 2.1
+Name: redis-decorators
+Version: 1.0.0
+Summary: Cache function return values automatically with decorators.
+Home-page: https://github.com/mtbrock/redis-decorators
+Author: Matt Brock
+Author-email: mtbrock@gmail.com
+License: UNKNOWN
+Project-URL: Bug Reports, https://github.com/mtbrock/redis-decorators/issues
+Project-URL: Source, https://github.com/mtbrock/redis-decorators
+Keywords: redis,redis-py,cache,caching,decorators
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.6, <4
+Description-Content-Type: text/markdown
+
+UNKNOWN
+

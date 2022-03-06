@@ -7,8 +7,8 @@ from redis import Redis
 
 from .cacheable import Cacheable, StringCacheable
 
-FetchType = TypeVar('FetchType')
-StoreType = TypeVar('StoreType')
+FetchType = TypeVar("FetchType")
+StoreType = TypeVar("StoreType")
 
 
 class CacheElement(Generic[FetchType, StoreType], ABC):
@@ -17,6 +17,7 @@ class CacheElement(Generic[FetchType, StoreType], ABC):
     Attributes:
         cacheable (Cacheable): Instance used to store and fetch values.
     """
+
     cacheable: Cacheable[StoreType]
 
     def get_value(self, client: Redis, key: str) -> Optional[FetchType]:
@@ -42,12 +43,12 @@ class CacheElement(Generic[FetchType, StoreType], ABC):
     @abstractmethod
     def load(self, value: StoreType) -> FetchType:
         """Load value from cache into expected Python type."""
-        pass
+        pass  # pragma: nocover
 
     @abstractmethod
     def dump(self, value: FetchType) -> StoreType:
         """Dump value from Python type into type expected by cache."""
-        pass
+        pass  # pragma: nocover
 
 
 @dataclass
@@ -61,6 +62,7 @@ class CacheElementSingleType(CacheElement[FetchType, FetchType]):
     a datetime would need to be serialized for storage and deserialized for
     retrieval.
     """
+
     cacheable: Cacheable[FetchType]
 
     def load(self, value: FetchType) -> FetchType:
@@ -73,6 +75,7 @@ class CacheElementSingleType(CacheElement[FetchType, FetchType]):
 @dataclass
 class CacheDateTime(CacheElement[datetime, str]):
     """Store and fetch datetime values with string serialization."""
+
     cacheable: Cacheable[str] = StringCacheable()
 
     def dump(self, value: datetime) -> str:

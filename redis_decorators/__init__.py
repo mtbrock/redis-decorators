@@ -6,5 +6,7 @@ from .cacheable import (
     DictStringCacheable,
     ListCacheable,
     ListCacheType,
-    StringCacheable
+    StringCacheable,
 )
+from .caching import RedisCaching, build_redis_url
+from .testing import FakeRedis

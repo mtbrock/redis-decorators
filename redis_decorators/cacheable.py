@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from collections.abc import Mapping
-from typing import Dict, Generic, List, Optional, TypeVar, cast
+from dataclasses import dataclass
+from typing import Dict, Generic, List, Optional, TypeVar
 
 from redis import Redis
 
-StoreType = TypeVar('StoreType')
+StoreType = TypeVar("StoreType")
 ListCacheType = List[str]
 DictCacheType = Dict[str, str]
 
@@ -12,11 +12,9 @@ DictCacheType = Dict[str, str]
 class Cacheable(Generic[StoreType], ABC):
     """Performs caching store and fetch operations for a specific type.
 
-    **StoreType**:
-        The type of value passed to :meth:`store` and returned from :meth:`fetch`.
-
     Subclass to define how to handle a specific type.
     """
+
     @abstractmethod
     def store(self, client: Redis, key: str, value: StoreType) -> None:
         """Store a value in cache.
@@ -29,7 +27,7 @@ class Cacheable(Generic[StoreType], ABC):
         Returns:
             None
         """
-        pass
+        pass  # pragma: nocover
 
     @abstractmethod
     def fetch(self, client: Redis, key: str) -> Optional[StoreType]:
@@ -42,7 +40,7 @@ class Cacheable(Generic[StoreType], ABC):
         Returns:
             StoreType or None: Value fetched from cache or None if no value exists.
         """
-        pass
+        pass  # pragma: nocover
 
 
 class StringCacheable(Cacheable[str]):
@@ -50,14 +48,16 @@ class StringCacheable(Cacheable[str]):
         client.set(key, value)
 
     def fetch(self, client: Redis, key: str) -> Optional[str]:
-        return cast(str, client.get(key))
+        return client.get(key)
 
 
+@dataclass
 class DictStringCacheable(Cacheable[str]):
     """
     Attributes:
         dict_key (str): Name of hash value.
     """
+
     dict_key: str
 
     def store(self, client: Redis, key: str, value: str):
@@ -69,10 +69,10 @@ class DictStringCacheable(Cacheable[str]):
 
 class DictCacheable(Cacheable[DictCacheType]):
     def store(self, client: Redis, key: str, value: DictCacheType):
-        client.hmset(key, cast(Mapping, value))
+        client.hset(key, mapping=value)
 
     def fetch(self, client: Redis, key: str) -> Optional[DictCacheType]:
-        return cast(DictCacheType, client.hgetall(key))
+        return client.hgetall(key) or None
 
 
 class ListCacheable(Cacheable[ListCacheType]):
@@ -81,4 +81,4 @@ class ListCacheable(Cacheable[ListCacheType]):
         client.rpush(key, *value)
 
     def fetch(self, client: Redis, key: str) -> Optional[ListCacheType]:
-        return client.lrange(key, 0, -1)
+        return client.lrange(key, 0, -1) or None
