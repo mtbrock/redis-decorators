@@ -32,7 +32,7 @@ in the following ways:
 
 #### Lambda function
 ```python
-@caching.cache_string(get_cache_key = lambda arg1: return f'{arg1}-cache-key')
+@caching.cache_string(get_cache_key=lambda arg1: return f'{arg1}-cache-key')
 def my_string_function(arg1):
     return 'my_value'
 ```
@@ -76,3 +76,82 @@ There are decorators already defined for various common datatypes.
 | Decorator | Wrapped Function Return Type | Redis Set Function | Redis Get Function |
 | --------- | ---------------------------- | ------------------ | ------------------ |
 | `RedisCaching.cache_str` | `str` | `set` | `get` |
+| `RedisCaching.cache_dict_str` | `str` | `hset` | `hget` |
+| `RedisCaching.cache_dict` | `dict` | `hset` | `hgetall` |
+| `RedisCaching.cache_list` | `list` | `rpush` | `lrange` |
+
+You can see how the various datatypes are stored and fetched in [cacheable.py](redis_decorators/cacheable.py).
+
+### Special Decorators
+All decorators accept the same arguments except for the following:
+
+- #### RedisCaching.cache_dict_str
+This decorator stores a value inside a cached dictionary (a redis hash).
+**Usage**
+```python
+@caching.cache_dict_string(dict_key='foo', get_cache_key=lambda arg1: return f'{arg1}-cache-key')
+def my_nested_value(arg1):
+    return "bar"
+```
+In the above example, calling `my_nested_value('hello')` results in a cached hash with key `hello-cache-key` and value `{ 'foo': 'bar' }.
+
+## Custom Data Types
+You can cache and retrieve any arbitrary data type as long as it can be serialized/transformed into a type that redis supports.
+
+### Examples
+#### Cache a `decimal.Decimal`
+This example serializes `Decimal` objects to strings and coerces fetched values back into `Decimal` objects.
+
+```python
+# Define a custom `CacheElement`
+class CacheDecimal(CacheElement[Decimal, str]):
+    cacheable: Cacheable[str] = StringCacheable()
+
+    def load(self, value: str) -> Decimal:
+        return Decimal(value)
+
+    def dump(self, value: Decimal) -> str:
+        return str(value)
+
+# Use the custom CacheElement with RedisCaching.cache_value
+@caching.cache_value(CacheDecimal())
+def my_decimal_function(arg1):
+    return Decimal('1.234')
+```
+
+#### Cache your own serializable type
+If you have a custom data type that is serializable, you can define a custom `CacheElement` to cache it.
+
+```python
+class MyObject:
+    def serialize(self):
+        # return a string representation
+
+    @classmethod
+    def from_str(cls, value):
+        # parse value and return a new instance
+
+
+class CacheMyObject(CacheElement[MyObject, str]):
+    cacheable: Cacheable[str] = StringCacheable()
+
+    def load(self, value: str) -> MyObject:
+        return Decimal.from_str(value)
+
+    def dump(self, value: MyObject) -> str:
+        return value.serialize()
+
+# Use the custom CacheElement with RedisCaching.cache_value
+@caching.cache_value(CacheMyObject())
+def my_decimal_function(arg1):
+    return MyObject()
+```
+
+Note the underlying `Cacheable` in these examples is `StringCacheable`. If you want to store your object as a different type,
+you can use other `Cacheable` classes to do so. For example, to store your object as a dictionary, you would
+use the `DictCacheable` instead of `StringCacheable`. With `DictCacheable`, the `load` function would take
+a `dict` object as the `value` argument and return your object type; the `dump` function would take your
+object type as the `value` argument and return a `dict`.
+
+See [cacheable.py](redis_decorators/cacheable.py) and [cache_element.py](redis_decorators/cache_element.py) for examples of
+`Cacheable` and `CacheElement`, respectively.
