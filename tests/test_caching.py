@@ -85,8 +85,8 @@ class DecoratedFunction:
 )
 class TestRedisCachingDecorators:
     @pytest.fixture(scope="class", autouse=True)
-    @classmethod
-    def setup_cls(cls, testing_redis_caching):
+    def setup_cls(self, testing_redis_caching):
+        cls = type(self)
         cls.caching = testing_redis_caching()
         cls.cache = cls.caching.get_cache()
 
