@@ -11,7 +11,7 @@ from .cacheable import (
     DictStringCacheable,
     ListCacheable,
     ListCacheType,
-    StringCacheable,
+    StringCacheable
 )
 
 
@@ -22,7 +22,7 @@ class RedisCaching:
     _cache_instances = {}
 
     def __init__(self, url=None, **kwargs):
-        self._default_cache_kwargs = {"decode_responses": True, "socket_timeout": 15}
+        self._default_cache_kwargs = {'decode_responses': True, 'socket_timeout': 15}
         self.init(url, **kwargs)
 
     def init(self, url, **kwargs):
@@ -173,7 +173,7 @@ class CacheValueWrapper:
 
     def _calculate_expire_in(self, value, *args, **kwargs):
         if callable(self._expire_in):
-            kwargs["value"] = value
+            kwargs['value'] = value
             return self._expire_in(*args, **kwargs)
 
         return self._expire_in
@@ -181,21 +181,21 @@ class CacheValueWrapper:
     def _calculate_cache_key(self, *args: Any, **kwargs: Any):
         if self._get_cache_key is None:
             arg_str = ':'.join([self._func.__name__, *[str(arg) for arg in args], str(kwargs)])
-            return ":".join(["redis_decorators", arg_str])
+            return ':'.join(['redis_decorators', arg_str])
 
         return self._get_cache_key(*args, **kwargs)
 
 
 def build_redis_url(host, password, db, use_secure=True):
 
-    prefix = "rediss" if use_secure else "redis"
+    prefix = 'rediss' if use_secure else 'redis'
 
     if password:
-        url = f"{prefix}://:{password}@{host}"
+        url = f'{prefix}://:{password}@{host}'
     else:
-        url = f"{prefix}://{host}"
+        url = f'{prefix}://{host}'
 
     if db:
-        url = f"{url}/{db}"
+        url = f'{url}/{db}'
 
     return url

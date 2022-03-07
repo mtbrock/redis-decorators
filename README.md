@@ -1,3 +1,5 @@
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mtbrock/a4b117f575fe24d0555e1bee9e682013/raw/pytest-coverage__master.json)
+
 # Redis Decorators
 Redis cache decorators for automatically caching function return values in Python.
 
