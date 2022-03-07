@@ -93,7 +93,7 @@ class TestRedisCachingDecorators:
     @pytest.fixture(scope="function", autouse=True)
     def setup_config(self, config):
         for key in self.cache.scan_iter('*'):
-            self.cache.delete(key)
+            self.caching.delete(key)
 
         self.value_decorator = getattr(self.caching, config.decorator_name)
         self.wrapped_function = mock.Mock()
