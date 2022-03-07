@@ -89,13 +89,14 @@ All decorators accept the same arguments except for the following:
 
 - #### RedisCaching.cache_dict_str
 This decorator stores a value inside a cached dictionary (a redis hash).
-**Usage**
+
+**Usage:**
 ```python
 @caching.cache_dict_string(dict_key='foo', get_cache_key=lambda arg1: return f'{arg1}-cache-key')
 def my_nested_value(arg1):
     return "bar"
 ```
-In the above example, calling `my_nested_value('hello')` results in a cached hash with key `hello-cache-key` and value `{ 'foo': 'bar' }.
+In the above example, calling `my_nested_value('hello')` results in a cached hash with key `hello-cache-key` and value `{ 'foo': 'bar' }`.
 
 ## Custom Data Types
 You can cache and retrieve any arbitrary data type as long as it can be serialized/transformed into a type that redis supports.
