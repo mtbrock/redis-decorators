@@ -191,3 +191,23 @@ def app():
     # initialize app and config, visit view modules, etc.
     caching.init(app.config.REDIS_URL, **app.config.REDIS_CONFIG)
 ```
+
+## Development
+### Install dev dependencies
+```sh
+pip install -r requirements.txt
+```
+
+### Run tests with pytest
+```sh
+pytest
+```
+### Run tests with a live redis server
+By default, tests are run using `fakeredis` instead of connecting to a real redis server. To run tests agains a live (local) redis server:
+```sh
+docker compose up -d
+pytest --redis-url redis://localhost:6379
+```
+
+## Contributing
+PRs and issues are always welcome.
