@@ -4,7 +4,7 @@ from typing import Dict, Generic, List, Optional, TypeVar
 
 from redis import Redis
 
-StoreType = TypeVar("StoreType")
+StoreType = TypeVar('StoreType')
 ListCacheType = List[str]
 DictCacheType = Dict[str, str]
 

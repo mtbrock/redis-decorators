@@ -7,8 +7,8 @@ from redis import Redis
 
 from .cacheable import Cacheable, StringCacheable
 
-FetchType = TypeVar("FetchType")
-StoreType = TypeVar("StoreType")
+FetchType = TypeVar('FetchType')
+StoreType = TypeVar('StoreType')
 
 
 class CacheElement(Generic[FetchType, StoreType], ABC):
