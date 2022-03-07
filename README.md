@@ -157,3 +157,37 @@ object type as the `value` argument and return a `dict`.
 
 See [cacheable.py](redis_decorators/cacheable.py) and [cache_element.py](redis_decorators/cache_element.py) for examples of
 `Cacheable` and `CacheElement`, respectively.
+
+## Advanced Usage
+### Deferred Init
+If your redis config is not available at the time `RedisCaching` is initialized, you can defer initialization using `RedisCaching.init`.
+This use case is common when using web frameworks like Flask or Pyramid, where you may have modules that use cache decorators that get
+imported before your app configuration is initialized.
+
+You can create a `RedisCaching` instance without providing a URL or redis config and use decorators throughout your code base. The cache functions
+will get registered before the connection to redis is made.
+
+#### Example
+Create an instance of `RedisCaching` in, for instance, `extensions.py`:
+```python
+from redis_decorators import RedisCaching
+caching = RedisCaching()
+```
+
+Use the cache decorators wherever you need to:
+```python
+from extensions import caching
+
+@caching.cache_string()
+def my_cached_string_function():
+    # ...
+```
+
+Initialize your `RedisCaching` instance after your config has been initialized:
+```python
+from extensions import caching
+
+def app():
+    # initialize app and config, visit view modules, etc.
+    caching.init(app.config.REDIS_URL, **app.config.REDIS_CONFIG)
+```
