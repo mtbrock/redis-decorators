@@ -29,7 +29,7 @@ setup(
     keywords='redis, redis-py, cache, caching, decorators',
     packages=find_packages(),
     python_requires='>=3.6, <4',
-    install_requires=['redis'],
+    install_requires=['redis', 'fakeredis'],
     project_urls={
         'Bug Reports': f'{repo_url}/issues',
         'Source': repo_url,
