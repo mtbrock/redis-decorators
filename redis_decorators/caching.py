@@ -6,6 +6,7 @@ from redis import Redis
 
 from .cache_element import CacheDateTime, CacheElement, CacheElementSingleType
 from .cacheable import (
+    BoolCacheable,
     DictCacheable,
     DictCacheType,
     DictStringCacheable,
@@ -128,6 +129,14 @@ class RedisCaching:
         """Decorate a function to store a datetime."""
         return self.cache_value(CacheDateTime(), get_cache_key, **kwargs)
 
+
+    def cache_bool(self, get_cache_key: Callable[..., str] = None, **kwargs):
+        """Decorate a function to store a string."""
+        return self.cache_value(
+            CacheElementSingleType[str](cacheable=BoolCacheable()),
+            get_cache_key,
+            **kwargs,
+        )
 
 class CacheValueWrapper:
     def __init__(

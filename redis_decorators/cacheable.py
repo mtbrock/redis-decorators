@@ -82,3 +82,11 @@ class ListCacheable(Cacheable[ListCacheType]):
 
     def fetch(self, client: Redis, key: str) -> Optional[ListCacheType]:
         return client.lrange(key, 0, -1) or None
+
+class BoolCacheable(Cacheable[bool]):
+    def store(self, client: Redis, key: str, value: bool):
+        client.set(key, str(value))
+
+    def fetch(self, client: Redis, key: bool) -> Optional[bool]:
+        res = client.get(key)
+        return bool(res) if res else None
