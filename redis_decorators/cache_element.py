@@ -5,7 +5,7 @@ from typing import Generic, Optional, TypeVar
 
 from redis import Redis
 
-from .cacheable import Cacheable, StringCacheable
+from .cacheable import Cacheable, StringCacheable, BoolCacheable
 
 FetchType = TypeVar('FetchType')
 StoreType = TypeVar('StoreType')
